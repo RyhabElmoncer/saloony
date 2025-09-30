@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:saloony/core/Config/ProviderSetup.dart';
+import 'package:saloony/core/services/TokenHelper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
@@ -392,6 +393,21 @@ class AuthService {
     return {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${token ?? ''}',
+    };
+  }
+
+  Future<Map<String, dynamic>?> getUserFromToken() async {
+    final token = await getAccessToken();
+    if (token == null) return null;
+
+    final payload = TokenHelper.decodeToken(token);
+    if (payload == null) return null;
+
+    return {
+      "id": payload["userId"] ?? payload["sub"], // selon ton backend
+      "email": payload["userEmail"],
+      "role": payload["role"] ?? payload["appRole"],
+      "exp": payload["exp"],
     };
   }
 }

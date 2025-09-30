@@ -1,41 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ProfileViewModel extends ChangeNotifier {
-  // Données de l'utilisateur
-  String fullName = "Anil Kumar";
-  String email = "anil29creative@gmail.com";
-  String avatarUrl =
-      "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjh8fG1hbnxlbnwwfHwwfHx8MA%3D%3D";
+  String? fullName;
+  String? email;
+  String? avatarUrl;
 
-  // Navigation
-  void goToProfileEdit(BuildContext context) {
-    Navigator.pushNamed(context, '/profileEdit');
+  bool isLoading = false;
+
+  // Exemple : récupérer les données du profil depuis le backend
+  Future<void> fetchProfile() async {
+    try {
+      isLoading = true;
+      notifyListeners();
+
+      final response = await http.get(
+        Uri.parse("http://localhost:8088/api/v1/auth/profile"),
+        headers: {
+          "Content-Type": "application/json",
+          // ⚠️ ajoute ton JWT si besoin
+          // "Authorization": "Bearer $token"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        fullName = data['fullName'];
+        email = data['email'];
+        avatarUrl = data['avatarUrl'];
+      } else {
+        throw Exception("Erreur de chargement du profil");
+      }
+    } catch (e) {
+      debugPrint("Erreur : $e");
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
-  void goToPaymentMethods(BuildContext context) {
-    Navigator.pushNamed(context, '/paymentMethods');
-  }
-
-  void goToOrdersHistory(BuildContext context) {
-    Navigator.pushNamed(context, '/ordersHistory');
-  }
-
-  void goToChangePassword(BuildContext context) {
-    Navigator.pushNamed(context, '/changePassword');
-  }
-
-  void goToInvitesFriends(BuildContext context) {
-    Navigator.pushNamed(context, '/invitesFriends');
-  }
-
-  void goToFaq(BuildContext context) {
-    Navigator.pushNamed(context, '/faq');
-  }
-
-  void goToAboutUs(BuildContext context) {
-    Navigator.pushNamed(context, '/aboutUs');
-  }
-
+  // Déconnexion
   void logout(BuildContext context) {
     Navigator.pushNamedAndRemoveUntil(context, '/splash', (route) => false);
   }
