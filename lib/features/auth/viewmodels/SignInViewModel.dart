@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saloony/core/services/AuthService.dart';
 
 class SignInViewModel extends ChangeNotifier {
   final emailController = TextEditingController();
@@ -12,21 +13,27 @@ class SignInViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void signIn(BuildContext context) {
+  Future<void> signIn(BuildContext context) async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
-    // Simple validation
     if (email.isEmpty || password.isEmpty) {
-      // You can use a SnackBar or any error handling
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter email and password')),
+        const SnackBar(content: Text('Veuillez entrer email et mot de passe')),
       );
       return;
     }
 
-    // TODO: Implement real sign-in logic
-    Navigator.pushNamed(context, '/home');
+    final authService = AuthService();
+    final result = await authService.signIn(email: email, password: password);
+
+    if (result['success']) {
+      Navigator.pushNamed(context, '/home');
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(result['message'])));
+    }
   }
 
   @override

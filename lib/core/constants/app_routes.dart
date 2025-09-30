@@ -10,10 +10,9 @@ import '../../features/auth/views/widgets/SignUpWidget.dart';
 import '../../features/auth/views/widgets/SuccessResetWidget.dart';
 import '../../features/profile/views/profile_widget.dart';
 
-
 class AppRoutes {
   static const String signIn = '/signIn';
-    static const String splash = '/splash';
+  static const String splash = '/splash';
 
   static const String signUp = '/signUp';
   static const String forgotPassword = '/forgotPassword';
@@ -29,9 +28,9 @@ class AppRoutes {
     signUp: (_) => const SignUpWidget(),
     forgotPassword: (_) => const ForgotPasswordWidget(),
     linkSent: (_) => const LinkSentWidget(),
-    resetPassword: (_) => ResetPasswordWidget(), // il faut la vue correspondante
+    resetPassword: (_) =>
+        ResetPasswordWidget(), // il faut la vue correspondante
     successReset: (_) => const SuccessResetWidget(),
-    home: (_) => const HomePageWidget(),
     profile: (_) => const ProfileWidget(),
   };
 }

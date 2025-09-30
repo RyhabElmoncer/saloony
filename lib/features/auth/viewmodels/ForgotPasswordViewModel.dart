@@ -1,29 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:saloony/core/services/AuthService.dart';
+
+import 'package:flutter/material.dart';
 
 class ForgotPasswordViewModel extends ChangeNotifier {
-  TextEditingController emailController = TextEditingController();
-  FocusNode emailFocusNode = FocusNode();
+  final TextEditingController emailController = TextEditingController();
+  final FocusNode emailFocusNode = FocusNode();
 
-  // Validation simple de l'email
+  // Simple email validator
   String? emailValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your email';
+      return 'Email is required';
     }
-    if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
-      return 'Please enter a valid email';
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (!emailRegex.hasMatch(value)) {
+      return 'Enter a valid email';
     }
     return null;
   }
 
-  // Méthode pour envoyer le lien de réinitialisation
-  void sendResetLink(BuildContext context) {
-    // Ici tu peux appeler ton API
-    // Après succès, naviguer vers LinkSent
-    Navigator.pushNamed(context, '/linkSent');
+  Future<void> sendResetLink(BuildContext context) async {
+    final email = emailController.text.trim();
+
+    if (emailValidator(email) != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid email')),
+      );
+      return;
+    }
+
+    // TODO: Call your backend API to send reset link
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Reset link sent to $email')));
   }
 
-  void disposeControllers() {
+  @override
+  void dispose() {
     emailController.dispose();
     emailFocusNode.dispose();
+    super.dispose();
   }
 }

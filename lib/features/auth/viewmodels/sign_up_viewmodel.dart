@@ -1,5 +1,7 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:saloony/core/services/AuthService.dart';
 
 class SignUpViewModel extends ChangeNotifier {
   final fullNameController = TextEditingController();
@@ -20,31 +22,29 @@ class SignUpViewModel extends ChangeNotifier {
     final password = passwordController.text.trim();
 
     if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      // Affiche un snack bar
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Tous les champs sont obligatoires")),
+        const SnackBar(content: Text("Tous les champs sont obligatoires")),
       );
       return;
     }
 
-    try {
-      // TODO: appel API backend ici
-      await Future.delayed(Duration(seconds: 2));
+    final authService = AuthService();
+    final result = await authService.signUp(
+      firstName: name,
+      lastName: "", // si tu veux demander le prénom/nom séparés
+      email: email,
+      password: password,
+      phoneNumber: "00000000",
+      gender: "HOMME",
+      role: "USER",
+    );
 
-      // navigation après succès
+    if (result['success']) {
       Navigator.pushNamed(context, "/verifyEmail");
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erreur lors de l’inscription")),
-      );
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(result['message'])));
     }
-  }
-
-  @override
-  void dispose() {
-    fullNameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
   }
 }
