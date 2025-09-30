@@ -1,3 +1,5 @@
+import 'package:jwt_decoder/jwt_decoder.dart';
+
 class TokenHelper {
   /// Extraire le payload décodé
   static Map<String, dynamic>? decodeToken(String? token) {
