@@ -1,4 +1,4 @@
 class Config {
-  static const String ipAddressAndPort = '192.168.24.8:19092';
+  static const String ipAddressAndPort = 'http://localhost:8080/api/v1/auth/';
 
 }

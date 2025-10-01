@@ -22,7 +22,7 @@ class ProviderSetup {
 
 class Config {
   // Configuration du serveur
-  static const String ipAddressAndPort = '192.168.24.8:19092';
+  static const String ipAddressAndPort = ' 192.168.1.117:8081';
 
   // Base URL pour les requêtes API
   static const String baseUrl = 'http://$ipAddressAndPort';
